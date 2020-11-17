@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { AppProvider } from "store";
 import { BrowserRouter } from "react-router-dom";
 import Root from "pages";
 import "antd/dist/antd.css";
@@ -7,7 +8,9 @@ import "./index.css";
 
 ReactDOM.render(
   <BrowserRouter>
-    <Root />
+    <AppProvider>
+      <Root />
+    </AppProvider>
   </BrowserRouter>,
   document.getElementById("root")
 );
