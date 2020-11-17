@@ -3,16 +3,20 @@ import { Route } from "react-router-dom";
 import Login from "./Login";
 import Profile from "./Profile";
 import Signup from "./Signup";
+import LoginRequiredRoute from "utils/LoginRequiredRoute";
 
 function Routes({ match }) {
   return (
     <>
-      <Route exact path={match.url + "/profile"} component={Profile} />
+      <LoginRequiredRoute
+        exact
+        path={match.url + "/profile"}
+        component={Profile}
+      />
       <Route exact path={match.url + "/login"} component={Login} />
       <Route exact path={match.url + "/signup"} component={Signup} />
     </>
   );
 }
-
 
 export default Routes;
