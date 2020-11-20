@@ -1,10 +1,19 @@
 import React, { useState } from "react";
-import { Card, Form, Input, Button, Upload, Modal } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-
+import { Card, Form, Input, Button, Upload, Modal, notification } from "antd";
+import { useHistory } from "react-router-dom";
+import { PlusOutlined, FrownOutlined } from "@ant-design/icons";
+import Axios from "axios";
 import { getBase64FromFile } from "utils/base64";
+import { useAppContext } from "store";
+import { parseErrorMessages } from "utils/forms";
 
 export default function PostNewForm() {
+  const {
+    store: { jwtToken },
+  } = useAppContext();
+
+  const history = useHistory();
+
   const [fileList, setFileList] = useState([]);
   const [previewPhoto, setPreviewPhoto] = useState({
     visible: false,
@@ -12,6 +21,10 @@ export default function PostNewForm() {
   });
 
   const [fieldErrors, setFieldErrors] = useState({});
+
+  const handleUploadChange = ({ fileList }) => {
+    setFileList(fileList);
+  };
 
   const handlePreviewPhoto = async (file) => {
     if (!file.url && !file.preview) {
@@ -23,22 +36,69 @@ export default function PostNewForm() {
       base64: file.url || file.preview,
     });
   };
-  const handleFinish = () => {};
 
-  const handleUploadChange = ({ fileList }) => {
-    setFileList(fileList);
+  const handleFinish = async (fieldValues) => {
+    const {
+      caption,
+      location,
+      photo: { fileList },
+    } = fieldValues;
+
+    const formData = new FormData();
+    formData.append("caption", caption);
+    formData.append("location", location);
+
+    fileList.forEach((file) => {
+      formData.append("photo", file.originFileObj);
+    });
+
+    const headers = { Authorization: `JWT ${jwtToken}` };
+    try {
+      const response = await Axios.post(
+        "http://localhost:8000/api/posts/",
+        formData,
+        {
+          headers,
+        }
+      );
+      console.log("success response : ", response);
+      history.push("/");
+    } catch (error) {
+      if (error.response) {
+        const { status, data: fiedlsErrorMessages } = error.response;
+
+        if (typeof fiedlsErrorMessages === "string") {
+          notification.open({
+            message: "서버 오류",
+            description: `에러) ${status} 응답을 받았습니다. 서버 에러를 확인 해주세요`,
+            icon: <FrownOutlined style={{ color: "#f34f23" }} />,
+          });
+        } else {
+          setFieldErrors(parseErrorMessages(fiedlsErrorMessages));
+        }
+      }
+    }
   };
+
   return (
     <Form {...layout} onFinish={handleFinish} autoComplete={"false"}>
       <Form.Item
-        label="Username"
-        name="username"
-        rules={[
-          { required: true, message: "Please input your username!" },
-          { min: 5, message: "다섯글자 이상 입력해주세요" },
-        ]}
+        label="Caption"
+        name="caption"
+        rules={[{ required: true, message: "Caption을 입력해주세요." }]}
         hasFeedback
-        {...fieldErrors.username}
+        {...fieldErrors.caption}
+        {...fieldErrors.non_field_errors}
+      >
+        <Input.TextArea />
+      </Form.Item>
+
+      <Form.Item
+        label="Location"
+        name="location"
+        rules={[{ required: true, message: "Location을 입력해주세요." }]}
+        hasFeedback
+        {...fieldErrors.location}
         {...fieldErrors.non_field_errors}
       >
         <Input />
@@ -84,8 +144,8 @@ export default function PostNewForm() {
           alt="Preview"
         />
       </Modal>
-      <hr />
-      {JSON.stringify(fileList)}
+      {/* <hr /> */}
+      {/* {JSON.stringify(fileList)} */}
     </Form>
   );
 }

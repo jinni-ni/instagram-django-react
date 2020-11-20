@@ -5,7 +5,7 @@ import StoryList from "./StoryList";
 import SuggestionList from "./SuggestionList";
 import LogoImage from "assets/logo.png";
 
-function AppLayout({ children }) {
+function AppLayout({ children, sidebar }) {
   return (
     <div className="app">
       <div className="header">
@@ -25,11 +25,8 @@ function AppLayout({ children }) {
       </div>
 
       <div className="contents">{children}</div>
-      <div className="sidebar">
-        <StoryList style={{ marginBottom: "1rem" }} />
-        <SuggestionList style={{ marginBottom: "1rem" }} />
-      </div>
-      <div className="footer">&Copy; developerjin</div>
+      <div className="sidebar">{sidebar}</div>
+      <div className="footer">&copy; developerjin</div>
     </div>
   );
 }

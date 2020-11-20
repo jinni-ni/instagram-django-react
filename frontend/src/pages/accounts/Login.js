@@ -5,6 +5,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import Axios from "axios";
 import { useAppContext } from "store";
 import { setToken } from "store";
+import { parseErrorMessages } from "utils/forms";
 
 export default function Login() {
   const { store, dispatch } = useAppContext();
@@ -57,19 +58,20 @@ export default function Login() {
           });
 
           const { data: fiedlsErrorMessages } = error.response;
-          setFieldErrors(
-            Object.entries(fiedlsErrorMessages).reduce(
-              (acc, [fieldName, errors]) => {
-                //errors
-                acc[fieldName] = {
-                  validateStatus: "error",
-                  help: errors.join(" "),
-                };
-                return acc;
-              },
-              {}
-            )
-          );
+          parseErrorMessages(fiedlsErrorMessages);
+          // setFieldErrors(
+          //   Object.entries(fiedlsErrorMessages).reduce(
+          //     (acc, [fieldName, errors]) => {
+          //       //errors
+          //       acc[fieldName] = {
+          //         validateStatus: "error",
+          //         help: errors.join(" "),
+          //       };
+          //       return acc;
+          //     },
+          //     {}
+          //   )
+          // );
         }
       }
     }
