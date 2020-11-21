@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "antd";
 import { Avatar } from "antd";
-import { UserOutlined } from "@ant-design/icons";
 import "./Suggestions.scss";
 
 export default function Suggestion({ suggestionUser, onFollowUser }) {
@@ -11,12 +10,7 @@ export default function Suggestion({ suggestionUser, onFollowUser }) {
       <div className="avatar">
         <Avatar
           size="small"
-          icon={
-            <img
-              src={"http://localhost:8000" + avatar_url}
-              alt={`${username}'s avatar`}
-            />
-          }
+          icon={<img src={avatar_url} alt={`${username}'s avatar`} />}
         />
       </div>
       <div className="username">{name.length === 0 ? username : name}</div>

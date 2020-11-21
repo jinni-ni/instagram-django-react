@@ -15,10 +15,7 @@ export default function Comment({ comment }) {
         author={displayName}
         avatar={
           // FIXME : avatar url host
-          <Avatar
-            src={"http://localhost:8000" + avatar_url}
-            alt={displayName}
-          />
+          <Avatar src={avatar_url} alt={displayName} />
         }
         content={<p>{message}</p>}
         datetime={
