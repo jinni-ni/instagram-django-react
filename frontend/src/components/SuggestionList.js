@@ -11,7 +11,6 @@ export default function SuggestionList({ style }) {
   } = useAppContext();
 
   const [userList, setUserList] = useState([]);
-
   const headers = { Authorization: `JWT ${jwtToken}` };
 
   // 조회에 유용

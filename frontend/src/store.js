@@ -6,7 +6,6 @@ import useReducerWithSideEffects, {
 import { getStorageItem, setStorageItem } from "utils/useLocalStorage";
 
 const AppContext = createContext();
-
 const reducer = (prevState, action) => {
   const { type } = action;
   if (type === SET_TOKEN) {
